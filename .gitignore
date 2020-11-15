@@ -1,0 +1,7 @@
+
+DNBfonts/*
+venv/*
+*.ipynb
+*.pyc
+.vscode/*
+envs/*
