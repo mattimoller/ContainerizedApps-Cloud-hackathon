@@ -43,7 +43,15 @@ df = pd.DataFrame({
 df['Dato'] = pd.to_datetime(df['Dato'], dayfirst=True, format='%d/%m/%y')
 
 
+def generate_store_map():
+    df_world = pd.read_csv('assets/worldcities.csv')
+    df_norway = df_world.loc[df_world['country'] == 'Norway']
+    map_fig = px.scatter_mapbox(df_norway, lat="lat", lon="lng", hover_name="city", hover_data=["population"],
+                        color_discrete_sequence=["fuchsia"], zoom=3, height=300)
+    map_fig.update_layout(mapbox_style="open-street-map")
+    map_fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 
+    return map_fig
 
 # If running in a single.page app use app.layout = html.Div()....., if running in multi-page app use layout = html.Div()
 layout=html.Div([
@@ -149,10 +157,17 @@ layout=html.Div([
             
             ],), 
             width={"size": 10, "offset": 1}
-        ),
-        style={'margin-top': '25px'}
+            ),
+            style={'margin-top': '25px'}
         ),
         
+                # Insert international transactions map and company structure
+        dbc.Row([
+            dbc.Col([html.H6(children='International transactions'), dcc.Graph(figure=generate_store_map())],
+                     width=10),
+            ],
+            style={'background-color': '#d7dce0', 'margin-top': '25px'}
+        ),
     ], fluid=True),
 ],
 )
