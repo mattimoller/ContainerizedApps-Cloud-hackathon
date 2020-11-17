@@ -39,9 +39,8 @@ dropdown = dbc.DropdownMenu(
     nav = True,
     in_navbar = True,
     label = "Velg side",
-    style={'fontSize': 13, 'color': '#002025'}
+    style={'fontSize': 13}
 )
-#55595c
 navbar = dbc.Navbar(
     dbc.Container([
         html.A(
@@ -57,7 +56,7 @@ navbar = dbc.Navbar(
             href="/page_1",
             style={"textAlign": "center", 'fontSize': 25}
         ),
-        dbc.NavbarToggler(id="navbar-toggler2", style={}),
+        dbc.NavbarToggler(id="navbar-toggler2"),
         dbc.Collapse(
             dbc.Nav(
                 # right align dropdown menu with ml-auto className
@@ -65,12 +64,10 @@ navbar = dbc.Navbar(
             ),
             id="navbar-collapse2",
             navbar=True,
-            style={}
         ),
     ]),
     color="#002025",
-    #dark=True,
-    className="mb-4",
+    dark=True,
 )
 
 def toggle_navbar_collapse(n, is_open):

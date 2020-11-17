@@ -24,33 +24,19 @@ colors = {
 }
 
 PAGE_SIZE = 5
-df = pd.DataFrame({
-    'VarselID': ['A270520200001', 'A120520200001', 'A010420200001', 'A280220190001'],
-    'KundeID': ['01017988333', '01017988333', '0204797722', '0204797722'],
-    'Kundenavn': ['Peder Ås', 'Peder Ås', 'Dagligvarer AS', 'Dagligvarer AS'],
-    'Forretningsområde': ['PM', 'PM', 'BM', 'BM'],
-    'Prioritering': ['B', 'C', 'A', 'A'],
-    'Dato': ['27/05/20', '12/05/20', '01/04/20', '28/02/19'],
-    'Regel': ['R01 - Unormal nedbetaling på lån', ' R04 - Avvik fra kundens oppgitte internasjonale transaksjonsmønster', 'R06 - Kontantinnskudd og transaksjoner til skatteparadis'
-        , 'R18 - Avvik fra kundesegment'],
-    'Varseltekst': ['Kunden har et lån på 2 700 000 NOK, hvor 40% av lånet ble nedbetalt i én transaksjon fra en tredjepart som ikke er disponent på lånet'
-                    , 'Kunden har oppgitt en månedlig frekvens av 2 transaksjoner til utlandet med totalsum på 100 000 NOK. Kunden har den foregående måneden hatt 7 transaksjoner til utlandet for en samlet sum på 7 000 000 NOK'
-                    , 'Kunden har den siste uken hatt 100 000 NOK i kontantinnskudd, og deretter sendt 110 000 NOK til skatteparadisen(e) Caymand Islands, Bermuda'
-                    , 'Kunden i segmentet "Små og mellomstore daglivarebutikker" har følgende avvik fra sitt segment: manglende lønnsutbetalinger, få kredittere varekjøp, høyt volum av nettbankbetalinger'
-                    ],
-    'Status': ['Åpen', 'Under utredning', 'Lukket', 'Sendt Økokrim'],
-})
-df['Dato'] = pd.to_datetime(df['Dato'], dayfirst=True, format='%d/%m/%y')
+
+df_world = pd.read_csv('assets/worldcities.csv')
+df_norway = df_world.loc[df_world['country'] == 'Norway']
+df_norway = df_norway.rename(columns={'population': 'Inbyggertall'})
+df_norway['Antall ansatte'] = (df_norway['Inbyggertall']*0.001).astype(int)
+df_norway['Sykefravær siste mnd (%)'] = np.random.randint(2, 20, size=(len(df_norway.index), 1))
 
 
-def generate_store_map():
-    df_world = pd.read_csv('assets/worldcities.csv')
-    df_norway = df_world.loc[df_world['country'] == 'Norway']
-    map_fig = px.scatter_mapbox(df_norway, lat="lat", lon="lng", hover_name="city", hover_data=["population"],
-                        color_discrete_sequence=["fuchsia"], zoom=3, height=300)
+def generate_store_map(df_norway):
+    map_fig = px.scatter_mapbox(df_norway, lat="lat", lon="lng", hover_name="city", hover_data=["Antall ansatte", "Sykefravær siste mnd (%)"],
+                        color_discrete_sequence=["#006458"], zoom=3, height=800, width=400)
     map_fig.update_layout(mapbox_style="open-street-map")
     map_fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-
     return map_fig
 
 # If running in a single.page app use app.layout = html.Div()....., if running in multi-page app use layout = html.Div()
@@ -59,114 +45,72 @@ layout=html.Div([
         dbc.Row(
             dbc.Col(
                 html.H2(
-                    "Varseloversikt",
+                    "Butikkoversikt",
                     className="text-center text-dark",
                 )
                 #width={"size": 6, "offset": 3}
             ),  
         ),
-
-        dbc.Row(dbc.Col(
-            dbc.Form([
-                dbc.Row([
-                    dbc.Col(
-                        dbc.FormGroup([
-                            dbc.Label('Startdato', html_for='dateStart', style={'margin-right': '5px'}),
-                            dcc.DatePickerSingle(
-                                id='dateStart', 
-                                min_date_allowed=date(2015, 1, 1), 
-                                max_date_allowed=datetime.now().date(),
-                                initial_visible_month=date(2020, 1, 1),
-                                clearable=True
-                            )],
-                        row=False
-                        ), 
-                        width=3
-                    ), 
-                    dbc.Col(
-                        dbc.FormGroup([
-                            dbc.Label('Sluttdato:', html_for='dateEnd', style={'margin-right': '5px'}),
-                            dcc.DatePickerSingle(
-                                id='dateEnd', 
-                                min_date_allowed=date(2015, 1, 1),
-                                max_date_allowed=datetime.now().date(),
-                                initial_visible_month=datetime.now().date(),
-                                clearable=True,
-                            )],
-                            row=False
-                        ), 
-                        width=3
-                    )
-                ]), 
-                dbc.Row([
-                    dbc.Col(
-                        dbc.FormGroup(
-                            [
-                                dbc.Label("KundeID", className="mr-2"),
-                                dbc.Input(type="text", id='CustID-input', placeholder="Skriv inn KundeID"),
-                            ],
-                        ),
-                    width=3,
-                    ),
-                    dbc.Col(
-                        dbc.FormGroup(
-                            [
-                                dbc.Label("Forretningsområde", className="mr-2"),
-                                dbc.Input(type="text",  placeholder="Skriv inn forretningsområde", id='FO-input', className="mr-2"),
-                            ],
-
-                        ),
-                    width=3
-                    ),
-
-                    dbc.Col(
-                        dbc.FormGroup(
-                            [
-                                dbc.Label("VarselID", className="mr-2"),
-                                dbc.Input(type="text",  placeholder="Skriv inn varselID", id='varselID-input', className="mr-2"),
-                            ],
-
-                        ),
-                    width=3
-                    ),
-
-                    dbc.Col(
-                        dbc.FormGroup(
-                            [
-                                dbc.Label("Varselstatus", className="mr-2"),
-                                dcc.Dropdown(
-                                    options=[
-                                        {'label': 'Åpen', 'value': 'Åpen'},
-                                        {'label': 'Under utredning', 'value': 'Under utredning'},
-                                        {'label': 'Lukket', 'value': 'Lukket'},
-                                        {'label': 'Sendt Økokrim', 'value': 'Sendt Økokrim'}
-                                    ],
-                                    #value=['MTL', 'NYC'],
-                                    multi=True,
-                                    id='status-input',
-                                    clearable=True
-                                ),
-                            ],
-
-                        ),
-                    width=3
-                    ), 
-                ]),
-            
-            dbc.Button("Søk", color="primary", id="SearchButton")
-            
-            ],), 
-            width={"size": 10, "offset": 1}
-            ),
-            style={'margin-top': '25px'}
-        ),
         
                 # Insert international transactions map and company structure
         dbc.Row([
-            dbc.Col([html.H6(children='International transactions'), dcc.Graph(figure=generate_store_map())],
-                     width=10),
+            dbc.Col(dcc.Graph(figure=generate_store_map(df_norway)),width=4),
+            dbc.Col([
+                dbc.Row(
+                    dbc.Col(
+                            dbc.FormGroup(
+                                [
+                                    dbc.Label("Velg butikk", className="mr-2"),
+                                    dcc.Dropdown(
+                                        options=[
+                                            {'label': i, 'value': i} for i in df_norway.city
+                                        ],
+                                        multi=True,
+                                        id='status-input',
+                                        clearable=True
+                                    ),
+                                ],
+                            ),
+                        width=6
+                    ), 
+                ),
+                dbc.Row(
+                    dbc.Col(html.H2(
+                        "Status: Sett inn butikk",
+                        className="text-center text-dark",
+                    ),),
+                style={'margin-top': '25px'}
+                ),
+                dbc.Row([
+                    dbc.Col(dcc.Markdown('''
+                        Text placeholder 1
+
+                    ''')),
+                    dbc.Col(dcc.Markdown('''
+                        Text placeholder 2
+
+                    ''')),
+                ],
+                style={'margin-top': '25px'}
+                ),
+
+                dbc.Row([
+                    dbc.Col(dcc.Markdown('''
+                        Text placeholder 3
+
+                    ''')),
+                    dbc.Col(dcc.Markdown('''
+                        Text placeholder 4
+
+                    ''')),
+                ],
+                style={'margin-top': '25px'}
+                ),
             ],
-            style={'background-color': '#d7dce0', 'margin-top': '25px'}
+            width=8
+            )
+            ],
+            style={'margin-top': '25px'}
         ),
     ], fluid=True),
 ],
