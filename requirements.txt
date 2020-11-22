@@ -1,5 +1,0 @@
-dash
-pandas
-python-igraph
-dash-bootstrap-components
-python-igraph
