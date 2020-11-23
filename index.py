@@ -34,7 +34,7 @@ PAGE_SIZE = 5
 # https://github.com/facultyai/dash-bootstrap-components/blob/master/examples/advanced-component-usage/Navbars.py
 dropdown = dbc.DropdownMenu(
     children=[
-        dbc.DropdownMenuItem("Page ", href="/page_1", style={'fontSize': 13}),
+        dbc.DropdownMenuItem("Distriktsoversikt", href="/page_1", style={'fontSize': 13}),
     ],
     nav = True,
     in_navbar = True,
@@ -47,8 +47,8 @@ navbar = dbc.Navbar(
             # Use row and col to control vertical alignment of logo / brand
             dbc.Row(
                 [
-                    dbc.Col(html.Img(src="/assets/logo_skrift.jpg", height="20px")),
-                    dbc.Col(dbc.NavbarBrand("HR-Dashboard", className="ml-2", style={"textAlign": "center", 'fontSize': 25, 'color': '#f9fdfc'})),
+                    dbc.Col(html.Img(src="/assets/Vinmonopolet-Logo.png", height="40px")),
+                    dbc.Col(dbc.NavbarBrand("HR-Dashboard", className="ml-2", style={"textAlign": "center", 'fontSize': 25, 'color': '#002025'})),
                 ],
                 no_gutters=True,
                 style={"textAlign": "center"}
@@ -66,8 +66,8 @@ navbar = dbc.Navbar(
             navbar=True,
         ),
     ]),
-    color="#002025",
-    dark=True,
+    color="#989898",
+    #dark=True,
 )
 
 def toggle_navbar_collapse(n, is_open):
