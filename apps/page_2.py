@@ -14,8 +14,7 @@ import plotly.express as px
 from app import app
 import random
 import json
-from urllib.request import urlopen
-from textwrap import dedent, indent
+from dateutil.relativedelta import relativedelta
 # external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 colors = {
@@ -26,30 +25,38 @@ colors = {
 }
 
 PAGE_SIZE = 5
-
-
 fylker = ['Rogaland', 'Finnmark', 'Troms', 'Møre og Romsdal', 'Hordaland', 'Telemark', 'Vestfold', 'Østfold', 'Buskerud', 'Oslo', 'Akershus', 'Oppland', 'Hedmark', 'Nordland', 'Aust-Agder', 'Vest-Agder', 'Trøndelag', 'Sogn og Fjordane']
-idList = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18"]
-ansatte = np.random.randint(low=500, high=2500, size=(len(fylker)), dtype='int')
-kvinneandel = np.random.randint(low=30, high=70, size=(len(fylker)), dtype='int')
+startdate = datetime(2017, 1, 1)
+enddate = datetime(2020, 10, 1)
+datelist = []
+tempdate = startdate
+while tempdate <= enddate:
+    datelist.append(tempdate)
+    tempdate += relativedelta(months=+1)
+
+ansatte = np.ones((1, len(datelist)) )*750
+randomAdd = np.random.randint(low=-5, high=10, size=(len(datelist) - 1), dtype='int')
+for i in range(0, ansatte.size):
+    ansatte[0, i] += np.sum(randomAdd[0:i+1])
+ansatte = ansatte.flatten()
+kvinneandel = np.random.randint(low=30, high=70, size=(len(datelist)), dtype='int')
 oppsigelser = np.round(ansatte*random.randint(5, 15)/100, 0)
-nyansatte = np.round(ansatte*random.randint(5, 15)/100, 0)
-alder_avg = np.random.randint(low=38, high=59, size=(len(fylker)), dtype='int')
-sykfra = np.random.randint(low=2, high=20, size=(len(fylker)), dtype='int')
+alder_avg = np.random.randint(low=38, high=59, size=(len(datelist)), dtype='int')
+sykfra = np.random.randint(low=2, high=20, size=(len(datelist)), dtype='int')
 
-df_counties = pd.DataFrame(
-    {'Fylke': fylker, 'Sykefravær': sykfra, 'Antall ansatte': ansatte, 'Kvinneandel': kvinneandel, 'Oppsigelser': oppsigelser, 
-        'Nyansatte': nyansatte, 'Alder_avg': alder_avg, 'id': idList})
+df = pd.DataFrame({'Dato': datelist, 'Ansatte': ansatte, 'Kvinneadel': kvinneandel, 'Oppsigelser': oppsigelser, 'Alder_avg': alder_avg})
 
-datelist = pd.date_range(datetime.today(), periods=100).tolist()
-ansatte = np.ones(datelist.shape())
-# If running in a single.page app use app.layout = html.Div()....., if running in multi-page app use layout = html.Div()
+def create_employee_graph():
+    fig = go.Figure(data=go.Scatter(x=df['Dato'], y=df['Ansatte']))
+    fig.update_xaxes(title_text='Dato')
+    fig.update_yaxes(title_text='Antall ansatte')
+    return fig
 layout=html.Div([
     dbc.Container([
         dbc.Row(
             dbc.Col(
                 html.H2(
-                    "Distriktsoversikt",
+                    "Distriktsdetaljer",
                     className="text-center text-dark",
                 ),
                 #width={"size": 6, "offset": 3}
@@ -59,96 +66,66 @@ layout=html.Div([
         
                 # Insert international transactions map and company structure
         dbc.Row([
-            dbc.Col(dcc.Graph(figure=generate_counties_map(df_counties, counties)),width=4),
-            dbc.Col([
-                dbc.Row(
-                    dbc.Col(
-                            dbc.FormGroup(
-                                [
-                                    dbc.Label("Velg distrikt", className="mr-2"),
-                                    dcc.Dropdown(
-                                        options=[
-                                            {'label': i, 'value': i} for i in df_counties.Fylke
-                                        ],
-                                        multi=False,
-                                        id='county-input',
-                                        clearable=True
-                                    ),
-                                ],
-                            ),
-                        width=6
-                    ), 
+            dbc.Col(
+                dbc.FormGroup([
+                    dbc.Label('Startdato', html_for='dateStart', style={'margin-right': '5px'}),
+                    dcc.DatePickerSingle(
+                        id='dateStart', 
+                        min_date_allowed=date(2017, 1, 1), 
+                        max_date_allowed=date(2020, 10, 1),
+                        initial_visible_month=date(2017, 10, 1),
+                        clearable=True
+                    )],
+                row=False
+                ), 
+            ), 
+            dbc.Col(
+                dbc.FormGroup([
+                    dbc.Label('Sluttdato:', html_for='dateEnd', style={'margin-right': '5px'}),
+                    dcc.DatePickerSingle(
+                        id='dateEnd', 
+                        min_date_allowed=date(2017, 1, 1),
+                        max_date_allowed=datetime.now().date(),
+                        initial_visible_month=datetime.now().date(),
+                        clearable=True,
+                    )],
+                    row=False
+                ), 
+            ),
+            dbc.Col(
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Velg distrikt", html_for='county-input', style={'margin-right': '5px'}),
+                        dcc.Dropdown(
+                            options=[{'label': i, 'value': i} for i in fylker],
+                            multi=False,
+                            id='county-input',
+                            clearable=True
+                        ),
+                    ],
+                    row=False,
                 ),
-                dbc.Row(
-                    dbc.Col(html.H2(
-                        children='',
-                        id = 'fylke-header',
-                        className="text-center text-dark",
-                    ),),
-                style={'margin-top': '25px'}
-                ),
-                dbc.Row([
-                    dbc.Col([dcc.Markdown('##### Antall ansatte: ' ), dcc.Markdown(children='', id='md-1')]),
-                    dbc.Col([dcc.Markdown('##### Kvinneandel: ' ),dcc.Markdown(children='', id='md-2')]),
-
-                ],
-                style={'margin-top': '25px'}
-                ),
-                dbc.Row([
-                    dbc.Col([dcc.Markdown('##### Sykefravær: ' ),dcc.Markdown(children='', id='md-3')]),
-                    dbc.Col([dcc.Markdown('##### Ansattes gjennomsnittsalder: ' ),dcc.Markdown(children='', id='md-6')]),
-
-                ],
-                style={'margin-top': '25px'}
-                ),
-
-              dbc.Row([
-                    dbc.Col([dcc.Markdown('##### Ansatte hittil i år: ' ),dcc.Markdown(children='', id='md-4')]),
-                    dbc.Col([dcc.Markdown('##### oppsigelser hittil i år: ' ),dcc.Markdown(children='', id='md-5')]),
-
-                ],
-                style={'margin-top': '25px'}
-                ),
-            ],
-            width=8
-            )
-            ],
-            style={'margin-top': '25px'}
+            ), 
+        ], 
+        form=True,
+        style={'margin-top': '25px'},
         ),
+                
+                
+        dbc.Row([
+            dbc.Col(children=[
+                html.H6(children='Antall ansatte over tid'),
+                dcc.Graph(figure=create_employee_graph()),
+            ],
+            ),
+        ],
+        style={'margin-top': '25px'},
+        className="text-center text-dark"),
     ], fluid=True),
 ],
 )
 
-@app.callback(
-    Output('fylke-header', "children"),
-    Output('md-1', "children"),
-    Output('md-2', "children"),
-    Output('md-3', "children"),
-    Output('md-4', "children"),
-    Output('md-5', "children"),
-    Output('md-6', "children"),
-    Input("county-input", "value"),
-)
-def update_county_markdown_info(search_value):
-    df_filtered = df_counties
-    if search_value != '' and search_value is not None:
-        df_filtered = df_filtered.loc[df_filtered['Fylke'] == search_value]
-        md1_var = int(df_filtered['Antall ansatte'])
-        md2_var = int(df_filtered['Kvinneandel'])
-        md3_var = int(df_filtered['Sykefravær'])
-        md4_var = int(df_filtered['Nyansatte'])
-        md5_var = int(df_filtered['Oppsigelser'])
-        md6_var = int(df_filtered['Alder_avg'])
-        md1 = f'{md1_var}'
-        md2 = f'{md2_var}%'
-        md3 = f'{md3_var}%'
-        md4 = f'{md4_var}'
-        md5 = f'{md5_var}'
-        md6 = f'{md6_var}'
-        fylke_head = 'Distrikt: ' + str(search_value)
-        return [fylke_head, md1, md2, md3, md4, md5, md6]
-    else:
-        return['Distrikt:', '', '', '', '', '', '']
+
 
 if __name__ == '__main__':
     app.run_server(debug=True, host='127.0.0.1', port='8050')

@@ -17,7 +17,7 @@ import random
 
 from app import app
 
-from apps import page_1
+from apps import page_1, page_2
 # import all pages in the app
 
 
@@ -35,6 +35,7 @@ PAGE_SIZE = 5
 dropdown = dbc.DropdownMenu(
     children=[
         dbc.DropdownMenuItem("Distriktsoversikt", href="/page_1", style={'fontSize': 13}),
+        dbc.DropdownMenuItem("Distriktsdetaljer", href="/page_2", style={'fontSize': 13}),
     ],
     nav = True,
     in_navbar = True,
@@ -96,6 +97,8 @@ app.layout = html.Div([
 def display_page(pathname):
     if pathname == '/page_1':
         return page_1.layout
+    elif pathname == '/page_2':
+        return page_2.layout
     else:
         return page_1.layout
 
