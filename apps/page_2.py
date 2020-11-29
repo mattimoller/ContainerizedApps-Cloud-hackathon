@@ -64,7 +64,6 @@ layout=html.Div([
             ),  
         ),
         
-                # Insert international transactions map and company structure
         dbc.Row([
             dbc.Col(
                 dbc.FormGroup([
