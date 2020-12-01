@@ -35,7 +35,7 @@ PAGE_SIZE = 5
 dropdown = dbc.DropdownMenu(
     children=[
         dbc.DropdownMenuItem("Distriktsoversikt", href="/page_1", style={'fontSize': 13}),
-        dbc.DropdownMenuItem("Distriktsdetaljer", href="/page_2", style={'fontSize': 13}),
+        dbc.DropdownMenuItem("Sykefravær oversikt", href="/page_2", style={'fontSize': 13}),
     ],
     nav = True,
     in_navbar = True,
