@@ -205,7 +205,7 @@ layout=html.Div([
         
         dbc.Row([
             dbc.Col(children=[
-                html.H4(children='Sykefravær i alle distrkit så langt i år'),
+                html.H4(children='Sykefravær i alle distrkit så så langt i år'),
                 dcc.Graph(figure=generate_sickleave_chart_allcounties(sykedata_monthly_df)),
             ],
             ),
