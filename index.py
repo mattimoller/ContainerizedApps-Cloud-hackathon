@@ -48,7 +48,7 @@ navbar = dbc.Navbar(
             # Use row and col to control vertical alignment of logo / brand
             dbc.Row(
                 [
-                    dbc.Col(html.Img(src="/assets/Vinmonopolet-Logo.png", height="40px")),
+                    dbc.Col(html.Img(src="/assets/BearingPoint_201x_logo.svg.png", height="40px")),
                     dbc.Col(dbc.NavbarBrand("HR-Dashboard", className="ml-2", style={"textAlign": "center", 'fontSize': 25, 'color': '#002025'})),
                 ],
                 no_gutters=True,
