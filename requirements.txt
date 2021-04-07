@@ -1,7 +1,7 @@
 numpy
 pandas
 plotly
-igraph
+jgraph
 textwrap3
 networkx
 dash
@@ -9,3 +9,4 @@ dash-bootstrap-components
 dash-core-components
 dash-html-components
 dash-table
+datetime

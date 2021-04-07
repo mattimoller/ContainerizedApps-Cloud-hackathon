@@ -1,21 +1,17 @@
 # -*- coding: utf-8 -*-
-from igraph import Graph, EdgeSeq
-from datetime import datetime, timedelta, date
+from datetime import datetime, date
 import numpy as np
 import plotly.graph_objects as go
-import dash
 import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 import dash_html_components as html
 import dash_table
-from dash.dependencies import Input, Output, State
+from dash.dependencies import Input, Output
 import pandas as pd
 import plotly.express as px
 from app import app
 import random
 import json
-from urllib.request import urlopen
-from textwrap import dedent, indent
 from dateutil.relativedelta import relativedelta
 # external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 

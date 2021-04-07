@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-from igraph import Graph, EdgeSeq
 from datetime import datetime, timedelta, date
 import numpy as np
 import plotly.graph_objects as go
@@ -7,13 +5,10 @@ import dash
 import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 import dash_html_components as html
-import dash_table
 from dash.dependencies import Input, Output, State
 import pandas as pd
 import plotly.express as px
 from app import app
-import random
-import json
 import random
 from dateutil.relativedelta import relativedelta
 # external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']

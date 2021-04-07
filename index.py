@@ -1,20 +1,9 @@
-import networkx as nx
-from igraph import Graph, EdgeSeq
-from datetime import datetime, timedelta
-import numpy as np
-import plotly.graph_objects as go
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 import dash_table
 from dash.dependencies import Input, Output, State
-import pandas as pd
-import plotly.express as px
-
-import sys
-import random
-
 from app import app
 
 from apps import page_1, page_2
@@ -105,4 +94,5 @@ def display_page(pathname):
 if __name__ == '__main__':
     # For local hosting, use <app.run_server(debug=True)>
     # For AWS hosting use <app.run_server(host='0.0.0.0', port=8050, debug=True)>
-    app.run_server(host='0.0.0.0', port=8050, debug=True)
+    #app.run_server(host='0.0.0.0', port=8050, debug=True)
+    app.run_server(debug=True)
