@@ -12,7 +12,7 @@ There are no required prerequisites to complete the tasks in the hackathon, but 
 Before the hackathon you should have the following installed on your computer. How to install each component is described below.
 - Python 3 (recommended, not mandatory. [Windows guide](https://phoenixnap.com/kb/how-to-install-python-3-windows), [Mac guide](https://docs.python-guide.org/starting/install3/osx/)) 
 - [Git](https://git-scm.com/downloads)
-- [Docker](https://docs.docker.com/get-docker/))
+- [Docker](https://docs.docker.com/get-docker/)
 - Have an [AWS account.](https://aws.amazon.com/free/?all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc)
 - Have the [AWS Command Line Interface (CLI) installed](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html). Version 2 is the newest version and recommended, if you already have Version 1 installed then that's fine.
 ### Installing Python 3 (optional but recommended)
