@@ -1,8 +1,8 @@
 # Containerized application BearingPoint Hackathon
-This GitHup repository will take you through how to deploy an application in the cloud using a Docker Image for your application. The application is a Python web application using the visualization library Dash.
+This GitHub repository will take you through how to deploy an application on AWS using a Docker Image for your application. The application is a Python web application using the visualization library Dash.
 
 ## Competency prerequisites
-There are no required prerequisites to complete the tasks in the hackathon, but some previous knowledge is benefitial:
+There are no required prerequisites to complete the tasks in the hackathon, but some previous knowledge is benefitial.
 - Familiar with Python, managing libraries and virtual environments
 - Basic command line experience
 - Familiar with what Docker is used for
@@ -63,29 +63,29 @@ To clone the repository, use the command prompt to navigate to the directory (fo
 You should now see that a folder has been created with the code for the dash application.
 
 ## Step 2 (Optional): Running the application locally on your computer
-Before we deploy the application using Docker in AWS we can try running the application locally first. To do this we first need to create a virtual environment and install the required Python packages.
+Before we deploy the application using Docker on AWS we can try running the application locally first. To do this we first need to create a virtual environment and install the required Python packages.
 
-To create a virtual environment named 'venv', you first need to have the package `virtualenv` installed. See the below commands to check if virtualenv is installed, and install it if it is not.
+To create a virtual environment named 'venv' you first need to have the package `virtualenv` installed. See the below commands to check if virtualenv is installed, and install it if it is not.
 
     # Check if virtualenv is installed
     $ virtualenv --version
     # Install virtualenv using pip
     $ pip install virtualenv
 
-Once the library is installed we can create the virtual environment and activate it as shown below. The environment will be created in your current directory in a folder we name "venv". In the .gitignore file that is a part of the repository you will notice that it is explicitly stated that we do not want to include the virtual environment as a part of our repository. This is best practice.
+Once 'venv' is installed we can create the virtual environment and activate it as shown below. The environment will be created in your current directory in a folder we name "venv". In the .gitignore file that is a part of the repository you will notice that it is explicitly stated that we do not want to include the virtual environment as a part of our repository. This is best practice.
 
     # Create the environment
     $ virtualenv venv
     # Activate the environment
     $ /venv/Scripts/activate.bat
 
-Now that the environment is created we need to install the required packagesto our environment. They are listed in the requirements.txt-file that was downloaded when the repository was cloned from GitHub and pip allows us to install the packages using this file.
+Now that the environment is created we need to install the required packages to our environment. They are listed in the requirements.txt file that was downloaded when the repository was cloned from GitHub and pip allows us to install the packages using this file.
 
     $ pip install -r requirements.txt
 
 Once the installation is complete the packages required to run the application should be installed. The application is run from the index.py file, before being run you however need to make one small change on the last lines of this file. The file should be modified so that the last line reads `app.run_Server(debug=True)`, instead of `app.run_server(host='0.0.0.0', port=8050, debug=True)`. This is also specified in the file.
 
-You can now view the dashboard by opening a web browser and entering the address [http://127.0.0.1:8050/](http://127.0.0.1:8050/). Stop the application by entering Ctrl+C in your command line.
+To run the application simply enter the command `$ python index.py` in the terminal. You can now view the dashboard by opening a web browser and entering the address [http://127.0.0.1:8050/](http://127.0.0.1:8050/). Stop the application by pressing Ctrl+C while in your terminal.
 
 At this stage you can play around with the application code as desired and modify it as you want, as long as it is still running. Remember to add any new packages you install to the requirements.txt file.
 
@@ -94,7 +94,7 @@ If you have run the application locally, also remember to change the last line o
 ## Step 3: Creating our Docker image
 Now that we have the application on our local computer we can create a Docker image of the application. This image will in turn be uploaded to AWS and create the basis for running our application on cloud infrastructure.
 
-A Docker image is created using a Dockerfile, the Dockerfile provides instructions on which packages the application needs and how the application is run. For our use case we will create our image from another base image *continuumio/miniconda3*. For a more thorough explanation of Dockerfile syntax [this article](https://betterprogramming.pub/what-goes-into-a-dockerfile-ff0ace591060) explains the commands we use.
+A Docker image is created using a Dockerfile, this file provides instructions on which packages the application needs and how the application is run. For our use case we will create our image from another base image *continuumio/miniconda3*. For a more thorough explanation of Dockerfile syntax [this article](https://betterprogramming.pub/what-goes-into-a-dockerfile-ff0ace591060) explains the commands we use.
 
 The complete Dockerfile specification is given below, the file can be stored in the same location as your application code. The Dockerfile should be stored without a file type ending, i.e it's name should just be "Dockerfile", not "Dockerfile.txt".
 
@@ -109,12 +109,12 @@ The complete Dockerfile specification is given below, the file can be stored in 
 
 The commands are shortly explained below:
 - **FROM**: Copies the base image
-- **WORKDIR**: sets /app as the workind directory, since this directory does not exist it is first created then set as the working directory
-- **COPY**: Copies the files in our current local directory to the Docker image, except for the ones specified in our .dockerignore file
-- **RUN**: Used to run commands on our server, here we first install pip and then use pip to install the required packages from requirements.txt
-- **EXPOSE**: Exposes port 8050 on the applicaion server, this is the port our application uses
-- **ENTRYPOINT**: default command to execute at runtime (when the container starts)
-- **CMD**: Command to run the application
+- **WORKDIR**: sets /app as the working directory, since this directory does not exist it is first created then set as the working directory.
+- **COPY**: Copies the files in our current local directory to the Docker image, except for the ones specified in our .dockerignore file.
+- **RUN**: Used to run commands on our container, here we first install pip and then use pip to install the required packages from requirements.txt.
+- **EXPOSE**: Exposes port 8050 on the applicaion server, this is the port our Dash application uses.
+- **ENTRYPOINT**: default command to execute at runtime (when the container starts).
+- **CMD**: Command to run the application.
 
 Once you have stored your Dockerfile the Docker image can be created. This is done by running one simple command in your terminal. Note that the command must be run from the directory where your Dockerfile is stored (the " . " tells Docker to look for a Dockerfile in the current directory). The name of the image is set to hackathon_dashboard, you can change this if you want.
 
@@ -131,7 +131,7 @@ Your terminal should now say that your application is running (see below screens
 ![Terminal message when app is running sucessfully on your local Docker Container](/assets/ReadMe/DockerAppRunSuccess.PNG)
 
 
-To stop the application press Ctrl+C on your terminal. To stop the running container you first need to find its name, this can be done by running `docker ps` which lists all running containers. You can then run the command `docker stop <container_name>` to stop the container. Verify that the container stopped succesfully by running `docker ps` again, which should now be empty.
+To stop the application press Ctrl+C in your terminal. To stop the running container you first need to find its name, this can be done by running `docker ps` which lists all running containers. You can then run the command `docker stop container_name` to stop the container. Verify that the container stopped succesfully by running `docker ps` again, which should now be empty.
 
 ## Step 4: Uploading our image to AWS
 
