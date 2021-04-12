@@ -10,18 +10,18 @@ There are no required prerequisites to complete the tasks in the hackathon, but 
 
 ## Step 0. Getting set ut before the hackathon
 Before the hackathon you should have the following installed on your computer. How to install each component is described below.
-- Python 3 (reccommended, not mandatory) 
+- Python 3 (recommended, not mandatory) 
 - Git
 - Docker  ([Guide](https://docs.docker.com/get-docker/))
 - Have an [AWS account.](https://aws.amazon.com/free/?all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc)
-- Have the [AWS Command Line Interface (CLI) installed](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html). Version 2 is the newest version and reccommended, if you already have Version 1 installed then that's fine.
-- 
-### Installing Python 3
-It is recommended to have Python 3 installed on your computer before the hackathon. This will allow you to testthe application on your own computer before we deploy it to the cloud.
+- Have the [AWS Command Line Interface (CLI) installed](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html). Version 2 is the newest version and recommended, if you already have Version 1 installed then that's fine.
+### Installing Python 3 (optional but recommended)
+It is recommended to have Python 3 installed on your computer before the hackathon. This will allow you to test the application on your own computer before we deploy it to the cloud.
 
-You can install Python 3 by following [this guide for Windows](https://phoenixnap.com/kb/how-to-install-python-3-windows) or [this guide for mac](https://docs.python-guide.org/starting/install3/osx/). Make sure that you also install pip, a package installer for Python (this is included in the guide for bot operating systems).
+You can install Python 3 by following [this guide for Windows](https://phoenixnap.com/kb/how-to-install-python-3-windows) or [this guide for Mac](https://docs.python-guide.org/starting/install3/osx/). Make sure that you also install pip, a package installer for Python (this is included in both guides).
 
 You can verify that your Python and pip installation worked by running the below commands in a terminal/command prompt window
+
     # Verify python
     $ python --version
 
@@ -31,6 +31,7 @@ You can verify that your Python and pip installation worked by running the below
 Git can be installed [here](https://git-scm.com/downloads). In this lab we will be cloning a repository from GitHub, you do not need a GitHub account in order to do this. If you do however want to start using GitHub as well, check out [this introduction to git and GitHub](https://product.hubspot.com/blog/git-and-github-tutorial-for-beginners).
 
 You can verify that the git installation worked running the below command in your terminal.
+    
     # Check git installation
     $ git --version
 
@@ -38,6 +39,7 @@ You can verify that the git installation worked running the below command in you
 Instructions on how to install Docker can be found [here] (https://docs.docker.com/get-docker/).
 
 You can verify the installation by running the below command in your terminal
+
     # Verify docker installation
     $ docker --version
 
