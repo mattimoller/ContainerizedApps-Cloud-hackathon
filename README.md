@@ -8,7 +8,7 @@ There are no required prerequisites to complete the tasks in the hackathon, but 
 - Familiar with what Docker is used for
 - Familiar with cloud services such as AWS/Azure
 
-## Step 0. Getting set ut before the hackathon
+## Step 0. Getting set up before the hackathon
 Before the hackathon you should have the following installed on your computer. How to install each component is described below.
 - Python 3 (recommended, not mandatory) 
 - Git
@@ -79,26 +79,24 @@ Once the library is installed we can create the virtual environment and activate
     # Activate the environment
     $ /venv/Scripts/activate.bat
 
-Now that the environment is created we can install the required packages by installing the packages needed. They are listed in the requirements.txt-file that was downloaded when the repository was cloned from GitHub and pip allows us to we install the packages using this file.
+Now that the environment is created we need to install the required packagesto our environment. They are listed in the requirements.txt-file that was downloaded when the repository was cloned from GitHub and pip allows us to install the packages using this file.
 
     $ pip install -r requirements.txt
 
-Once the installation is complete the packages required to ron the application should be installed. The application is run from the index.py-file, before being run you however need to make one small change on the last lines of this file. The file should be modified so that the server and app.run_Server-line reads as below. This is also specified in the file.
+Once the installation is complete the packages required to run the application should be installed. The application is run from the index.py file, before being run you however need to make one small change on the last lines of this file. The file should be modified so that the last line reads `app.run_Server(debug=True)`, instead of `app.run_server(host='0.0.0.0', port=8050, debug=True)`. This is also specified in the file.
 
-    app.run_Server(debug=True)
-
-You can now view the dashboard at by opening a web browser and entering the address [http://127.0.0.1:8050/](http://127.0.0.1:8050/). Stop the application by entering ctrl+C in your command line.
+You can now view the dashboard by opening a web browser and entering the address [http://127.0.0.1:8050/](http://127.0.0.1:8050/). Stop the application by entering Ctrl+C in your command line.
 
 At this stage you can play around with the application code as desired and modify it as you want, as long as it is still running. Remember to add any new packages you install to the requirements.txt file.
 
-If you have run the application locally, also remember to change the last line of the index.py-file so that it can be deployed with Docker on AWS.
+If you have run the application locally, also remember to change the last line of the index.py file so that the last line reads  `app.run_server(host='0.0.0.0', port=8050, debug=True)`. This will ensure our deployment using Docker works as expected.
 
 ## Step 3: Creating our Docker image
 Now that we have the application on our local computer we can create a Docker image of the application. This image will in turn be uploaded to AWS and create the basis for running our application on cloud infrastructure.
 
-A Docker image is created from a Dockerfile, this Dockerfile is what we will now create. The Dockerfile will be created from the base image continuumio/miniconda3. For a more thorough explanation of Dockerfile syntax [this article](https://betterprogramming.pub/what-goes-into-a-dockerfile-ff0ace591060) explains the commands we use.
+A Docker image is created using a Dockerfile, the Dockerfile provides instructions on which packages the application needs and how the application is run. For our use case we will create our image from another base image *continuumio/miniconda3*. For a more thorough explanation of Dockerfile syntax [this article](https://betterprogramming.pub/what-goes-into-a-dockerfile-ff0ace591060) explains the commands we use.
 
-The complete Dockerfile specification is given below.
+The complete Dockerfile specification is given below, the file can be stored in the same location as your application code. The Dockerfile should be stored without a file type ending, i.e it's name should just be "Dockerfile", not "Dockerfile.txt".
 
     FROM continuumio/miniconda3
     WORKDIR "/app"
@@ -110,25 +108,30 @@ The complete Dockerfile specification is given below.
     CMD [ "index.py" ]
 
 The commands are shortly explained below:
-- FROM: Copies the base image
-- WORKDIR: sets /app as the workind directory, since this directory does not exist it is first created then set as the working directory
-- COPY: Copies the files in our current local directory to the Docker image, except for the ones specified in our .dockerignore file
-- RUN: Used to run commands on our server, here we first install pip and then use pip to install the required packages from requirements.txt
-- EXPOSE 8050: Exposes port 8050 on the applicaion server, this is the port our application uses
-- ENTRYPOINT: default command to execute at runtime (when the container starts)
-- CMD: Command to run the application
+- **FROM**: Copies the base image
+- **WORKDIR**: sets /app as the workind directory, since this directory does not exist it is first created then set as the working directory
+- **COPY**: Copies the files in our current local directory to the Docker image, except for the ones specified in our .dockerignore file
+- **RUN**: Used to run commands on our server, here we first install pip and then use pip to install the required packages from requirements.txt
+- **EXPOSE**: Exposes port 8050 on the applicaion server, this is the port our application uses
+- **ENTRYPOINT**: default command to execute at runtime (when the container starts)
+- **CMD**: Command to run the application
 
-Now that you have the Dockerfile ready our Docker image can be created. This is done by running one simple command in your terminal. Note that the command must be run from the directory where your Dockerfile is stored (the " . " tells Docker to look for a Dockerfile in the current directory)
+Once you have stored your Dockerfile the Docker image can be created. This is done by running one simple command in your terminal. Note that the command must be run from the directory where your Dockerfile is stored (the " . " tells Docker to look for a Dockerfile in the current directory). The name of the image is set to hackathon_dashboard, you can change this if you want.
 
     docker build -t hackathon_dashboard .
 
-Docker will now line-by-line execute your Dockerfile commands, you can follow the progress in your terminal. When the build is complete you can try running the image on a Docker container on your local computer before we upload it to AWS. This can again be done with one command and if no errors occur your build was successful.
+Docker will now execute the Dockerfile commands line by line and you can follow the progress in your terminal. The build should finish without any error messages but may take a minute or two due to the Python package installation. 
+
+When the build is complete you can try running the image on a Docker container on your local computer before we upload it to AWS. This can again be done with one command and if no errors occur your build was successful.
 
     docker run hackathon_dashboard
 
-Accessing the application can be quite tricky due to the port mappings used in Docker. As long as you know your application is running successfully you are OK to move on th the next stage.
+Your terminal should now say that your application is running (see below screenshot). Accessing the application can however be quite tricky due to the networking configuration used in Docker. I have not been able to figure out exactly why the application can't be accessed at the given address but will update with new information if i find any. As long as you know your application is running successfully you are OK to move on to the next stage.
 
-To stop the running container you first need to find its name. This can be done by running `docker ps` which lists all running containers. You can then run the command `docker stop <container_name>` to stop the container. Verify that the container stopped succesfully by running `docker ps` again, which should now be empty.
+![Terminal message when app is running sucessfully on your local Docker Container](/assets/ReadMe/DockerAppRunSuccess.PNG)
+
+
+To stop the application press Ctrl+C on your terminal. To stop the running container you first need to find its name, this can be done by running `docker ps` which lists all running containers. You can then run the command `docker stop <container_name>` to stop the container. Verify that the container stopped succesfully by running `docker ps` again, which should now be empty.
 
 ## Step 4: Uploading our image to AWS
 
