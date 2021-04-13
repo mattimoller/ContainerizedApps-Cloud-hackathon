@@ -1,5 +1,5 @@
 # Containerized application BearingPoint Hackathon
-This GitHub repository will take you through how to deploy an application on AWS using a Docker Image for your application. The application is a Python web application using the visualization library Dash.
+This GitHub repository will take you through how to deploy an application on AWS using a Docker Image and container. The application is a Python web application using the visualization library Dash. The application shows some dummy data
 
 ## Competency prerequisites
 There are no required prerequisites to complete the tasks in the hackathon, but some previous knowledge is benefitial.
@@ -30,7 +30,7 @@ You can verify that your Python and pip installation worked by running the below
 ### Installing git
 Git can be installed [here](https://git-scm.com/downloads). In this lab we will be cloning a repository from GitHub, you do not need a GitHub account in order to do this. If you do however want to start using GitHub as well, check out [this introduction to git and GitHub](https://product.hubspot.com/blog/git-and-github-tutorial-for-beginners).
 
-You can verify that the git installation worked running the below command in your terminal.
+You can verify that the git installation worked by running the below command in your terminal.
     
     # Check git installation
     $ git --version
@@ -44,7 +44,7 @@ You can verify the installation by running the below command in your terminal.
     $ docker --version
 
 ### Creating an AWS account
-Creatnig an AWS account is free and can be done [here](https://aws.amazon.com/free/?all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc).
+Creating an AWS account is free and can be done [here](https://aws.amazon.com/free/?all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc).
 
 ### Installing the AWS Command Line Interface (CLI)
 The AWS CLI is a way to programatically interact with AWS. The CLI allows for users to create and manage resources though a command prompt/terminal instead of through the AWS Console.
@@ -69,27 +69,29 @@ To create a virtual environment named 'venv' you first need to have the package 
 
     # Check if virtualenv is installed
     $ virtualenv --version
+
     # Install virtualenv using pip
     $ pip install virtualenv
 
-Once 'venv' is installed we can create the virtual environment and activate it as shown below. The environment will be created in your current directory in a folder we name "venv". In the .gitignore file that is a part of the repository you will notice that it is explicitly stated that we do not want to include the virtual environment as a part of our repository. This is best practice.
+Once `vitualenv` is installed we can create the virtual environment and activate it as shown below. The environment will be created in your current directory in a folder we name *venv*. In the .gitignore file that is a part of this repository you will notice that it is explicitly stated that we do not want to include the virtual environment as a part of our repository. This is best practice.
 
     # Create the environment
     $ virtualenv venv
+
     # Activate the environment
     $ /venv/Scripts/activate.bat
 
-Now that the environment is created we need to install the required packages to our environment. They are listed in the requirements.txt file that was downloaded when the repository was cloned from GitHub and pip allows us to install the packages using this file.
+Now that the environment is created we need to install the required packages to our environment. They are listed in the requirements.txt file that was downloaded when the repository was cloned from GitHub and pip allows us to install the packages by reading from this file.
 
     $ pip install -r requirements.txt
 
-Once the installation is complete the packages required to run the application should be installed. The application is run from the index.py file, before being run you however need to make one small change on the last lines of this file. The file should be modified so that the last line reads `app.run_Server(debug=True)`, instead of `app.run_server(host='0.0.0.0', port=8050, debug=True)`. This is also specified in the file.
+Once the installation is complete the packages required to run the application should be installed. The application is run from the `index.py` file, before being run you however need to make one small change on the last lines of this file. The file should be modified so that the last line reads `app.run_Server(debug=True)`, instead of `app.run_server(host='0.0.0.0', port=8050, debug=True)`. This is also specified in the file.
 
 To run the application simply enter the command `$ python index.py` in the terminal. You can now view the dashboard by opening a web browser and entering the address [http://127.0.0.1:8050/](http://127.0.0.1:8050/). Stop the application by pressing Ctrl+C while in your terminal.
 
 At this stage you can play around with the application code as desired and modify it as you want, as long as it is still running. Remember to add any new packages you install to the requirements.txt file.
 
-If you have run the application locally, also remember to change the last line of the index.py file so that the last line reads  `app.run_server(host='0.0.0.0', port=8050, debug=True)`. This will ensure our deployment using Docker works as expected.
+If you have run the application locally, also remember to change the last line of the `index.py` file so that the last line reads  `app.run_server(host='0.0.0.0', port=8050, debug=True)`. This will ensure our deployment using Docker works as expected.
 
 ## Step 3: Creating our Docker image
 Now that we have the application on our local computer we can create a Docker image of the application. This image will in turn be uploaded to AWS and create the basis for running our application on cloud infrastructure.
@@ -122,7 +124,7 @@ Once you have stored your Dockerfile the Docker image can be created. This is do
 
 Docker will now execute the Dockerfile commands line by line and you can follow the progress in your terminal. The build should finish without any error messages but may take a minute or two due to the Python package installation. 
 
-When the build is complete you can try running the image on a Docker container on your local computer before we upload it to AWS. This can again be done with one command and if no errors occur your build was successful.
+When the build is complete you can try running the image on a Docker container on your own computer before we upload it to AWS. This can be done with the command below and if no errors occur your build was successful and the application is now running.
 
     $ docker run hackathon_dashboard
 
@@ -150,54 +152,54 @@ To use the AWS CLI we need an access key pair which needs to be generated in the
 
 ![My security credentials](/assets/ReadMe/MySecurityCredentials.png)
 
-From this page, click on *Access keys (access key ID and secret access key)* and *Create New Access Key*. The key will be downloaded on your computer, make sure to save it somewhere. You will nor be able to download it again and if it is lost you will need to generate a new key pair.
+From this page, click on *Access keys (access key ID and secret access key)* and *Create New Access Key*. The key will be downloaded on your computer, make sure to save it somewhere. You will not be able to download it again and if it is lost you will need to generate a new key pair.
 
 ### Step 4b: Create an Elastic Container Repository (ECR)
-The AWS service which manages container orchestration is called Elastic Compute Service (ECS). You can navigate to ECS by searching for it in the search bar, or by pressing services in the top left window (ECS can be found under *Containers*).
+The AWS service which manages container orchestration is called Elastic Compute Service (ECS). You can navigate to ECS by searching for it in the search bar, or by clicking on *Services* in the top left window (ECS can be found under *Containers*).
 
-Once on the ECS landing page, navigate to *Repositories* in the menu on the left side. Once in the repositories page, press *Create repository*. Create the repository as a pricate repository and give it a fitting name, leave everything else as default.
+Once on the ECS landing page, navigate to *Repositories* in the menu on the left hand side. Once in the repositories page, click *Create repository*. Create the repository as a private repository and give it a fitting name. Leave everything else as default.
 
 ![Repository creation](/assets/ReadMe/CreateRepository.png)
 
 Now that we have ceated our repository we are ready to upload our Docker image.
 
 ### Step 4c: Uploading our Docker Image to AWS
-We will now use the AWS CLI to upload our Docker image to AWS. This assumes you have the AWS CLI installed on your compute (see [Step 0. Getting set up before the hackathon](#step-0-getting-set-up-before-the-hackathon)).
+We will now use the AWS CLI to upload our Docker image to AWS. This assumes you have the AWS CLI installed on your computer (see [Step 0. Getting set up before the hackathon](#step-0-getting-set-up-before-the-hackathon)).
 
 Before uploading our image we need to configure our AWS access in the CLI. This is done in the terminal with the below commands and your previously downloaded access key pair.
 
     $ aws configure set aws_access_key_id YOUR_ACCESS_KEY
     $ aws configure set aws_secret_access_key YOUR_SECRET_KEY
 
-We can also set the region as the same region we created our repository (if N. Virginia then he region name is us-east-1), and set JSON as the default output format.
+We also need to set the region as the same region where we created our repository (if N. Virginia then the region name is us-east-1), and set JSON as the default output format.
 
-    $ aws configure set default.region <YOUR_REGION>
+    $ aws configure set default.region YOUR_REGION
     $ aws configure set default.output json
 
-We can now log in to ECR. There is a ctually a breaking change in how you log in to ECR in the CLI Version 2 compared to version 1. Both login commands are provided below, [here](https://docs.aws.amazon.com/cli/latest/userguide/cliv2-migration.html) you can see the full list of breaking changs between the versions.
+We can now log in to ECR. There is actually a breaking change in how you log in to ECR in the CLI Version 2 compared to Version 1. Both login commands are provided below, [here](https://docs.aws.amazon.com/cli/latest/userguide/cliv2-migration.html) you can see the full list of breaking changes between the versions.
 
     # CLI Version 1 login
-    $ (aws ecr get-login --no-include-email --region <YOUR REGION>)
+    $ (aws ecr get-login --no-include-email --region YOUR REGION)
 
     # CLI Version 2 login
     $ aws ecr get-login-password | docker login --username AWS --password-stdin MY-REGISTRY-URL
 
-The registry URL id for the registry you widh to access, in our case this is the registry we jusy created in AWS. The URL (or URI as ECR calls it) can be found in the repository overview, see image below.
+The registry URL is for the registry you wish to access, in our case this is the registry we jusy created in AWS. The URL (or URI as ECR calls it) can be found in the repository overview, see image below.
 
 ![Find your registry URI](/assets/ReadMe/MyRegistryURI.png)
 
 If the terminal responds with a *Login Succeeded* message you know you have successfully logged in to ECR and are ready to upload your Docker image.
 
-To upload the image to aws we first se the `docker tag` command and then the `docker push` command. For a more complete description on what these commands do check out the [Docker documentation](https://docs.docker.com/engine/reference/commandline/push/).
+To upload the Docker Image to AWS we will use the `docker tag` command and then the `docker push` commands. The `<EXISTING_IMAGE_NAME>` is the name of the image that was created in Step 3 (*hackathon_dashboard*), the AWS repository URI is the same as the one shown in the above picture. For a more complete description of what the Docker commands do check out the [Docker documentation](https://docs.docker.com/engine/reference/commandline/push/).
 
     $ docker tag <EXISTING_IMAGE_NAME> <AWS_REPOSITORY_URI>
     $ docker push <AWS_REPOSITORY_URI>
 
-An example of the commands and the reuslt is shown below.
+An example of the commands and the result is shown below.
 
 ![Push Docker image to the AWS repository](/assets/ReadMe/DockerPushImage.PNG)
 
-You can verify tat the push was successful by clicking on your repository in AWS, you should see that a *latest* version of your image is now available in the repository. Copy the URI and store it somewhere temporarily, you will need it when creating the container to deploy the image.
+You can verify that the push was successful by clicking on your repository in AWS, you should see that a *latest* version of your image is now available in the repository. Copy the URI and store it somewhere temporarily, you will need it when creating the container to deploy the image.
 
 ![Latest version of the Docker image in the ECR repository](/assets/ReadMe/AWSRepoLatest.PNG)
 
@@ -206,15 +208,17 @@ Now that the Docker image is available on AWS we can run a container on AWS to m
 
 To start, navigate to *Clusters* on the left hand side of the ECS landing page. Click *Get started*. 
 
-For the cotainer definition, click *Configure* on the custom image.
+![ECS Get started](/assets/ReadMe/ECS_GetStarted.png)
+
+For the container definition, click *Configure* on the custom image.
 
 ![Custom container definition](/assets/ReadMe/ECSGetStarted_CustomDef.png)
 
-Give your container an apppropriate name. For the Image URI, paste the URI from the *latest* version of the image that you copied previously. The port mapping is 8050, this tells the container which port the application is running on within the application server. Leave everything else as default.
+Give your container an appropriate name. For the Image URI, paste the URI from the *latest* version of the image that you copied previously. The port mapping is 8050, this tells the container which port the application is using on the application server. Leave everything else as default and click *Update*.
 
 ![Edit container](/assets/ReadMe/ECSEditContainer.png)
 
-Click on *Next* at the bottom to move on to the Service definition. For the Load balancer type, select *Application Load balancer, leave everythin else as default and press *Next*
+Click on *Next* at the bottom to move on to the Service definition. For the Load balancer type, select *Application Load balancer*, leave everything else as default and click *Next*
 
 ![Service Definition](/assets/ReadMe/ECSServiceDef.png)
 
@@ -228,7 +232,7 @@ AWS will now create the resources required by your cluster. This includes a Virt
 
 Once the launch is complete click *View service*. If the status of the service is *PENDING*, wait until it says *ACTIVE* (should only take a minute or two). 
 
-To view the dasboard, press *Tasks*. You should see that you have one running task, click on it. This will take you to a page similar to the one shown below.
+To view the dasboard we will need the Public IP of the server. You can find it by clicking on *Tasks*. You should see that you have one running task, click on it. This will take you to a page similar to the one shown below.
 
 ![Service task information](/assets/ReadMe/ECS_Service_TaskInfo.png)
 
@@ -249,25 +253,25 @@ You can try to access the application by pasting the Load Balancer DNS Name into
 - Change the Load Balancer to listen on port 80 instead of 8050
 - Allow inbound traffic from port 80 (HTTP) to our load balancer
 
-Changing the listener can be done by clicking on listners, selecting the listener (there should only be one) and clicking *edit*. Change the pot protocol from 8050 to 80 and click update.
+Changing the listener can be done by clicking on listners, selecting the listener (there should only be one) and clicking *edit*. Change the port protocol from 8050 to 80 and click *Update* in the top right.
 
 ![Change listener port](/assets/ReadMe/ALB_ChangePort.png)
 
-To update the security group, go back to the Loab Balancer Description and scroll down to Security. Click on the security group ID, which will take you to the VPC section of the AWS Console.
+To update the security group, go back to the Load Balancer Description and scroll down to Security. Click on the security group ID, which will take you to the VPC section of the AWS Console.
 
 ![Security group ALB info](/assets/ReadMe/ALB_SecurityGroup.png) 
 
-Once on the VPC Secutity group page, select the one being used by your ALB (even though you have filtered on a secutiry group two secutiry groups may still show, the console is a little buggy). Click on the Inbound rules tab and *Edit inbound rules*
+Once on the VPC Security group page, select the one being used by your ALB (even though you have filtered on a secutiry group two secutiry groups may still show, the console is a little buggy). Click on the Inbound rules tab and *Edit inbound rules*
 
 ![Security group ALB info](/assets/ReadMe/SecurityGroup_EditInbound.png)
 
-Now add an inbound rule for port 80 as shown below and clisk *Save rules*
+Now add an inbound rule for port 80 as shown below and click *Save rules*
 
 ![Security group ALB info](/assets/ReadMe/SecurityGroup_AddPort80.png)
 
 You can now try to accessing the application with the ALB DNS name *without* the port number at the end, it should work.
 
-The point of including this as a part of the demo was that, in a real life situation whee you have users who wish to access the dashboard, adding *:8050* at the end of a website name is not user-friendly. Knowing how to create a load balancer which correctly maps to the correct ports and allows the necessary access is therefore useful in real life situations.
+The point of including this as a part of the demo was that, in a real life situation where you have users who wish to access the dashboard, adding *:8050* at the end of a website name is not user-friendly. Knowing how to create a load balancer which correctly maps to the correct ports and allows the necessary access is therefore useful in real life situations.
 
 ## Step 6: Deleting everything
 Running an ECS cluster on AWS is unfortunately not included in the AWS free tier usage, we should therefore delete the resources we have created to avoid paying for the resources in the future. To do this simpply navigate to your ECS Cluster and click *Delete cluster*. AWS will delete all the resources that were provisioned when the cluster was created.
