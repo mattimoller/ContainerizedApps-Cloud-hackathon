@@ -148,7 +148,7 @@ There are several ways to interact with AWS. One is via the [AWS Management Cons
 
 To use the AWS CLI we need an access key pair which needs to be generated in the AWS Management Console. To create an access key go to *My Seurity Credentials* by clicking on your account name in the top right hand corner once you are logged in to the console.
 
-![My security credentials](/assets/ReadMe/MySecurityCredentials.PNG)
+![My security credentials](/assets/ReadMe/MySecurityCredentials.png)
 
 From this page, click on *Access keys (access key ID and secret access key)* and *Create New Access Key*. The key will be downloaded on your computer, make sure to save it somewhere. You will nor be able to download it again and if it is lost you will need to generate a new key pair.
 
@@ -157,7 +157,7 @@ The AWS service which manages container orchestration is called Elastic Compute 
 
 Once on the ECS landing page, navigate to *Repositories* in the menu on the left side. Once in the repositories page, press *Create repository*. Create the repository as a pricate repository and give it a fitting name, leave everything else as default.
 
-![Repository creation](/assets/ReadMe/Createrepository.png)
+![Repository creation](/assets/ReadMe/CreateRepository.png)
 
 Now that we have ceated our repository we are ready to upload our Docker image.
 
@@ -195,11 +195,11 @@ To upload the image to aws we first se the `docker tag` command and then the `do
 
 An example of the commands and the reuslt is shown below.
 
-![Push Docker image to the AWS repository](/assets/ReadMe/DockerPushImage.png)
+![Push Docker image to the AWS repository](/assets/ReadMe/DockerPushImage.PNG)
 
 You can verify tat the push was successful by clicking on your repository in AWS, you should see that a *latest* version of your image is now available in the repository. Copy the URI and store it somewhere temporarily, you will need it when creating the container to deploy the image.
 
-![Latest version of the Docker image in the ECR repository](/assets/ReadMe/AWSRepoLatest.png)
+![Latest version of the Docker image in the ECR repository](/assets/ReadMe/AWSRepoLatest.PNG)
 
 ## Step 5: Running our Docker container on AWS
 Now that the Docker image is available on AWS we can run a container on AWS to make the application available to anyone in the world. We will do this using the AWS Console.
@@ -232,7 +232,7 @@ To view the dasboard, press *Tasks*. You should see that you have one running ta
 
 ![Service task information](/assets/ReadMe/ECS_Service_TaskInfo.png)
 
-You can now view your application by opening a new tab in your web browser and entering the public IP address of the task followed by :8050. For the public IP above this would read `3.81.86.88:8050`.
+You can now view your application by opening a new tab in your web browser and entering the public IP address of the task followed by :8050.
 
 Congratulations, you have now successfully launched a Docker application on AWS! 
 
