@@ -276,4 +276,6 @@ The point of including this as a part of the demo was that, in a real life situa
 ## Step 6: Deleting everything
 Running an ECS cluster on AWS is unfortunately not included in the AWS free tier usage, we should therefore delete the resources we have created to avoid paying for the resources in the future. To do this simpply navigate to your ECS Cluster and click *Delete cluster*. AWS will delete all the resources that were provisioned when the cluster was created.
 
+Second, go into the Elastic Container Registry and delete the repository you previously created.
+
 
