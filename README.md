@@ -126,9 +126,9 @@ Docker will now execute the Dockerfile commands line by line and you can follow 
 
 When the build is complete you can try running the image on a Docker container on your own computer before we upload it to AWS. This can be done with the command below and if no errors occur your build was successful and the application is now running.
 
-    $ docker run hackathon_dashboard
+    $ docker run -p 8050:8050 hackathon_dashboard
 
-Your terminal should now say that your application is running (see below screenshot). Accessing the application can however be quite tricky due to the networking configuration used in Docker. I have not been able to figure out exactly why the application can't be accessed at the given address but will update with new information if i find any. As long as you know your application is running successfully you are OK to move on to the next stage.
+Your terminal should now say that your application is running (see below screenshot). You should be able to access your application by entering [http://localhost:8050](http://localhost:8050) in your web browser.
 
 ![Terminal message when app is running sucessfully on your local Docker Container](/assets/ReadMe/DockerAppRunSuccess.PNG)
 
